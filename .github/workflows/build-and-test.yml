@@ -1,0 +1,44 @@
+name: Build and Test (.NET 9)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Test on .NET 9
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore ModularMonolith.Template.sln
+
+      # Build all module API projects first
+      - name: Build Auth.API module
+        run: dotnet build src/Modules/Auth/Auth.API/Auth.API.csproj --configuration Release --no-restore
+
+      - name: Build Users.API module
+        run: dotnet build src/Modules/Users/Users.API/Users.API.csproj --configuration Release --no-restore
+
+      # Add more modules build steps here if you add new modules
+
+      # Build main API project after modules are built
+      - name: Build ModularMonolith.Template.Api
+        run: dotnet build src/ModularMonolith.Template.Api/ModularMonolith.Template.Api.csproj --configuration Release --no-restore
+
+      # Build and run tests
+      - name: Build Tests
+        run: dotnet build tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
