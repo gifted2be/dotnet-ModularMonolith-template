@@ -7,38 +7,101 @@ on:
     branches: [main, develop]
 
 jobs:
-  build:
+  build-modules:
     runs-on: ubuntu-latest
-    name: Build and Test on .NET 9
-
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
       - name: Restore dependencies
         run: dotnet restore ModularMonolith.Template.sln
 
-      # Build all module API projects first
       - name: Build Auth.API module
         run: dotnet build src/Modules/Auth/Auth.API/Auth.API.csproj --configuration Release --no-restore
 
       - name: Build Users.API module
         run: dotnet build src/Modules/Users/Users.API/Users.API.csproj --configuration Release --no-restore
 
-      # Add more modules build steps here if you add new modules
+      - name: Prepare artifacts folder
+        run: |
+          mkdir -p artifacts/Auth.API
+          mkdir -p artifacts/Users.API
+          cp -r src/Modules/Auth/Auth.API/bin/Release/net9.0/* artifacts/Auth.API/
+          cp -r src/Modules/Users/Users.API/bin/Release/net9.0/* artifacts/Users.API/
 
-      # Build main API project after modules are built
+      # Upload the modular build outputs (adjust paths as needed)
+      - name: Upload modules build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: modules-build-output
+          path: artifacts/
+
+  build-main-api:
+    runs-on: ubuntu-latest
+    needs: build-modules
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x     
+
+      - name: Restore dependencies
+        run: dotnet restore ModularMonolith.Template.sln
+
+      # Make sure modular DLLs are available for main API build (copy or reference as needed)
+
       - name: Build ModularMonolith.Template.Api
         run: dotnet build src/ModularMonolith.Template.Api/ModularMonolith.Template.Api.csproj --configuration Release --no-restore
 
-      # Build and run tests
+      # Download modular build outputs
+      - name: Download modules build output
+        uses: actions/download-artifact@v4
+        with:
+          name: modules-build-output
+          path: src/ModularMonolith.Template.Api/bin/Release/net9.0/Modules
+
+      # Upload main API build output
+      - name: Upload main api build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-api-build-output
+          path: src/ModularMonolith.Template.Api/bin/Release/net9.0/
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: build-main-api
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      # Download main API build outputs
+      - name: Download main api build output
+        uses: actions/download-artifact@v4
+        with:
+          name: main-api-build-output
+          path: ./mainapi
+
+      - name: Restore dependencies
+        run: dotnet restore ModularMonolith.Template.sln
+
       - name: Build Tests
         run: dotnet build tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-restore
+
+      - name: Copy Modules from mainapi to test bin directory
+        run: |
+          echo "./mainapi list"
+          ls -R ./mainapi
+          cp -r ./mainapi/* /home/runner/work/dotnet-ModularMonolith-template/dotnet-ModularMonolith-template/tests/bin/Release/net9.0/
+
+      - name: List copied Modules content (for debug)
+        run: | 
+          echo "Listing contents of test output Modules folder:"
+          ls -R /home/runner/work/dotnet-ModularMonolith-template/dotnet-ModularMonolith-template/tests/bin/Release/net9.0 || echo "No Modules folder found"
 
       - name: Run tests
         run: dotnet test tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
