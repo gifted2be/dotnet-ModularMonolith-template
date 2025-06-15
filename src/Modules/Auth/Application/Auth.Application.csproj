@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharedKernel\ModularMonolith.Template.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Users\Application\Users.Application.csproj" />
+    <ProjectReference Include="..\Domain\Auth.Domain.csproj" />
+    <ProjectReference Include="..\Infra\Auth.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

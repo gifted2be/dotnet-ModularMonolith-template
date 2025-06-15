@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsModularPublish>false</IsModularPublish>
+    <UserSecretsId>d01e314f-2381-4bc7-91c0-d4e418150775</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1-Preview.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>    
+    <ProjectReference Include="..\ModularMonolith.Template.Config\ModularMonolith.Template.Config.csproj" />
+    <ProjectReference Include="..\ModularMonolith.Template.Infra\ModularMonolith.Template.Infra.csproj" />
+    <ProjectReference Include="..\Modules\SharedKernel\ModularMonolith.Template.SharedKernel.csproj" />
+  </ItemGroup>
+
+
+  <!-- Set flag before publish -->
+  <Target Name="SetPublishFlag" BeforeTargets="Publish">
+    <PropertyGroup>
+      <IsModularPublish>true</IsModularPublish>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Build module project only during publish -->
+  <Target Name="BuildModulesAfterApi" Condition="'$(IsModularPublish)' == 'true'" AfterTargets="Publish">
+    <Message Text="Building Users.API module..." Importance="high" />
+    <Exec Command="dotnet build $(SolutionDir)src\Modules\Users\Users.API\Users.API.csproj -c $(Configuration)" />
+    <Exec Command="dotnet build $(SolutionDir)src\Modules\Auth\Auth.API\Auth.API.csproj -c $(Configuration)" />
+  </Target>
+
+  <!-- Copy module DLLs only during publish -->
+  <Target Name="CopyModuleApiDllsForPublish" Condition="'$(IsModularPublish)' == 'true'" AfterTargets="BuildModulesAfterApi">
+    <ItemGroup>
+      <UserApiOutput Include="$(SolutionDir)src\Modules\Users\Users.API\bin\$(Configuration)\$(TargetFramework)\**\*.*" />
+      <AuthApiOutput Include="$(SolutionDir)src\Modules\Auth\Auth.API\bin\$(Configuration)\$(TargetFramework)\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(UserApiOutput)" DestinationFolder="$(TargetDir)Modules\Users.API\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(AuthApiOutput)" DestinationFolder="$(TargetDir)Modules\Auth.API\" SkipUnchangedFiles="true" />
+  </Target>
+
+  <!-- In development mode, copy module DLLs after building the main API project -->
+  <Target Name="CopyModuleApiDllsForDev" Condition="'$(IsModularPublish)' != 'true'" AfterTargets="Build">
+    <Message Text="Copying Users.API module DLLs for local dev..." Importance="low" />
+    <ItemGroup>
+      <UserApiOutput Include="$(SolutionDir)src\Modules\Users\Users.API\bin\$(Configuration)\$(TargetFramework)\**\*.*" />
+      <AuthApiOutput Include="$(SolutionDir)src\Modules\Auth\Auth.API\bin\$(Configuration)\$(TargetFramework)\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(UserApiOutput)" DestinationFolder="$(TargetDir)Modules\Users.API\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(AuthApiOutput)" DestinationFolder="$(TargetDir)Modules\Auth.API\" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
