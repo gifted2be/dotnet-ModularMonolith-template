@@ -90,7 +90,7 @@ jobs:
       - name: Copy Modules from mainapi to test bin directory
         run: |
           mkdir -p tests/ModularMonolith.Template.Application.Tests/bin/Release/net9.0/Modules
-          cp -r ./mainapi/Modules/* tests/ModularMonolith.Template.Application.Tests/bin/Release/net9.0/Modules/
+          cp -r ./mainapi/* tests/ModularMonolith.Template.Application.Tests/bin/Release/net9.0/Modules/
 
       - name: List copied Modules content (for debug)
         run: | 
