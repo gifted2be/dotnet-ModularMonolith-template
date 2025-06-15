@@ -8,7 +8,8 @@ using Users.Application.DTOs;
 
 namespace ModularMonolith.Template.Application.Tests.IntegrationTests
 {
-    public class AuthApiIntegrationTests : IClassFixture<ModularApiFactory>
+    [Collection("SharedApiFactory")]
+    public class AuthApiIntegrationTests
     {
         private readonly ModularApiFactory _factory;
         private readonly HttpClient _client;
@@ -26,7 +27,7 @@ namespace ModularMonolith.Template.Application.Tests.IntegrationTests
         [Fact]
         public async Task Full_Auth_Flow_Should_Succeed()
         {
-            // 1. Register
+            // 1. Register            
             registerDto.Email = TestDataGenerator.GenerateRandomEmail();
 
             HttpResponseMessage? registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerDto);

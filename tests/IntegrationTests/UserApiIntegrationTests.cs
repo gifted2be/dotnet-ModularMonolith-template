@@ -10,7 +10,8 @@ using Users.Application.DTOs;
 
 namespace ModularMonolith.Template.Application.Tests.IntegrationTests
 {
-    public class UserApiIntegrationTests: IClassFixture<ModularApiFactory>
+    [Collection("SharedApiFactory")]
+    public class UserApiIntegrationTests
     {
         private readonly ModularApiFactory _factory;
         private readonly HttpClient _client;
