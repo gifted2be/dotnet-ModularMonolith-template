@@ -27,7 +27,7 @@ jobs:
 
       # Upload the modular build outputs (adjust paths as needed)
       - name: Upload modules build output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: modules-build-output
           path: |
@@ -45,7 +45,7 @@ jobs:
 
       # Download modular build outputs
       - name: Download modules build output
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: modules-build-output
           path: ./modules
@@ -60,7 +60,7 @@ jobs:
 
       # Upload main API build output
       - name: Upload main api build output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: main-api-build-output
           path: src/ModularMonolith.Template.Api/bin/Release/net9.0/
@@ -76,7 +76,7 @@ jobs:
 
       # Download main API build outputs
       - name: Download main api build output
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: main-api-build-output
           path: ./mainapi
