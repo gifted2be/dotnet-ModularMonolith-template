@@ -37,9 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: modules-build-output
-          path: |
-            src/Modules/Auth/Auth.API/bin/Release/net9.0/
-            src/Modules/Users/Users.API/bin/Release/net9.0/
+          path: artifacts/
 
   build-main-api:
     runs-on: ubuntu-latest
