@@ -29,14 +29,29 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <Target Name="CopyModulesFolderToTestBin" AfterTargets="Build">
+  <!--<Target Name="CopyModulesFolderToTestBin" AfterTargets="Build">
     <Message Text="Copying Modules folder from ModularMonolith.Template.Api output to test bin directory..." Importance="high" />
 
     <ItemGroup>
-      <!-- Get all files inside the Modules folder in the main API output directory -->
+       --><!--Get all files inside the Modules folder in the main API output directory--><!-- 
       <ModulesFiles Include="$(SolutionDir)src\ModularMonolith.Template.Api\bin\$(Configuration)\$(TargetFramework)\Modules\**\*.*" />
     </ItemGroup>
 
     <Copy SourceFiles="@(ModulesFiles)" DestinationFiles="@(ModulesFiles->'$(TargetDir)Modules\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>-->
+
+  <Target Name="CopyModulesFromApi" AfterTargets="Build">
+    <PropertyGroup>
+      <ApiOutputDir>$(MSBuildProjectDirectory)/../src/ModularMonolith.Template.Api/bin/$(Configuration)/$(TargetFramework)</ApiOutputDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Modules Include="$(ApiOutputDir)/Modules/**/*.*" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(OutDir)Modules" />
+
+    <Copy SourceFiles="@(Modules)"
+          DestinationFiles="@(Modules->'$(OutDir)Modules/%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
