@@ -24,51 +24,35 @@ namespace ModularMonolith.Template.Application.Tests.IntegrationTests
         internal readonly RegisterDto registerDto = TestUsers.RegisterDto;
 
         [Fact]
-        public async Task POST_Register()
+        public async Task Full_Auth_Flow_Should_Succeed()
         {
+            // 1. Register
             registerDto.Email = TestDataGenerator.GenerateRandomEmail();
-            HttpResponseMessage? response = await _client.PostAsJsonAsync("/api/auth/register", registerDto);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
+            HttpResponseMessage? registerResponse = await _client.PostAsJsonAsync("/api/auth/register", registerDto);
+            registerResponse.EnsureSuccessStatusCode();
 
-        [Fact]
-        public async Task POST_Login()
-        {
+            // 2. Login
             LoginDto loginDto = new LoginDto
             {
-                Email = testUser.Email,
-                Password = testUser.Password
+                Email = registerDto.Email,
+                Password = registerDto.Password
             };
 
-            HttpResponseMessage response = await _client.PostAsJsonAsync("/api/auth/login", loginDto);
-
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
-
-        [Fact]
-        public async Task POST_Refresh()
-        {
-            LoginDto loginDto = new LoginDto
-            {
-                Email = testUser.Email,
-                Password = testUser.Password
-            };
-
-            HttpResponseMessage loginResponse = await _client.PostAsJsonAsync("/api/auth/login", loginDto);
+            HttpResponseMessage? loginResponse = await _client.PostAsJsonAsync("/api/auth/login", loginDto);
             loginResponse.EnsureSuccessStatusCode();
 
-            string json = await loginResponse.Content.ReadAsStringAsync();
-            JsonObject? root = JsonNode.Parse(json)?.AsObject();
-            string? token = root?["data"]?["token"]?.GetValue<string>();
+            string loginJson = await loginResponse.Content.ReadAsStringAsync();
+            JsonObject? root = JsonNode.Parse(loginJson)?.AsObject();
             string? refreshToken = root?["data"]?["refreshToken"]?.GetValue<string>();
 
-            RefreshTokenDto refreshTokenDto = new RefreshTokenDto { 
-                RefreshToken = refreshToken ?? string.Empty,
+            // 3. Refresh
+            RefreshTokenDto refreshTokenDto = new RefreshTokenDto
+            {
+                RefreshToken = refreshToken ?? string.Empty
             };
 
-            HttpResponseMessage refreshResponse = await _client.PostAsJsonAsync("/api/auth/refresh", refreshTokenDto);
-
+            HttpResponseMessage? refreshResponse = await _client.PostAsJsonAsync("/api/auth/refresh", refreshTokenDto);
             refreshResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
