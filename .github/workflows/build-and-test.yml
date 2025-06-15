@@ -29,8 +29,8 @@ jobs:
         run: |
           mkdir -p artifacts/Auth.API
           mkdir -p artifacts/Users.API
-          cp src/Modules/Auth/Auth.API/bin/Release/net9.0/* artifacts/Auth.API/
-          cp src/Modules/Users/Users.API/bin/Release/net9.0/* artifacts/Users.API/
+          cp -r src/Modules/Auth/Auth.API/bin/Release/net9.0/* artifacts/Auth.API/
+          cp -r src/Modules/Users/Users.API/bin/Release/net9.0/* artifacts/Users.API/
 
       # Upload the modular build outputs (adjust paths as needed)
       - name: Upload modules build output
