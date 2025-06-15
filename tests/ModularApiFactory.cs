@@ -4,6 +4,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ModularMonolith.Template.Application.Tests.Common;
 using ModularMonolith.Template.Config.DbContext;
 
 using Users.Infra.Entities;
@@ -90,9 +91,9 @@ namespace ModularMonolith.Template.Application.Tests
                 {
                     //Id = Guid.Parse("ed7fee6d-1183-480d-a5cc-c607f5cedbf2"),
                     Id = Guid.NewGuid(),
-                    UserName = "testuser",
-                    Email = "test@example.com",
-                    Password = BCrypt.Net.BCrypt.HashPassword("123")
+                    UserName = TestUsers.SeedUser.UserName,
+                    Email = TestUsers.SeedUser.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(TestUsers.SeedUser.Password)
                 });
                 db.SaveChanges();
             }

@@ -15,6 +15,13 @@ namespace ModularMonolith.Template.Application.Tests.Common
             Password = "123"
         };
 
+        public static readonly UserDto SeedUser = new UserDto
+        {
+            UserName = "testuser",
+            Email = "test@example.com",
+            Password = "123"
+        };
+
         public static readonly RegisterDto RegisterDto = new RegisterDto
         {
             UserName = "Test User",

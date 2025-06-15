@@ -49,8 +49,8 @@ namespace ModularMonolith.Template.Application.Tests.IntegrationTests
             await RegisterUserIfNotExistsAsync();
 
             LoginDto loginDto = new LoginDto { 
-                Email = "test@example.com",
-                Password = "123"
+                Email = TestUsers.SeedUser.Email,
+                Password = TestUsers.SeedUser.Password
             };
 
             HttpResponseMessage loginResponse = await _client.PostAsJsonAsync("/api/auth/login", loginDto);
