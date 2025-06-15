@@ -87,5 +87,21 @@ jobs:
       - name: Build Tests
         run: dotnet build tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-restore
 
+      - name: Copy Modules from mainapi to test bin directory
+        run: |
+          mkdir -p tests/ModularMonolith.Template.Application.Tests/bin/Release/net9.0/Modules
+          cp -r ./mainapi/Modules/* tests/ModularMonolith.Template.Application.Tests/bin/Release/net9.0/Modules/
+
+      - name: List copied Modules content (for debug)
+        run: | 
+          echo "Listing contents of test output Modules folder:"
+          ls -R tests/ModularMonolith.Template.Application.Tests/bin/Release/net9.0/Modules || echo "No Modules folder found"
+          
+      - name: List published DLLs
+        run: ls -R ./tests/ModularMonolith.Template.Application.Tests/bin/Release
+          
+      # - name: Run tests
+      #  run: dotnet test tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --collect:"XPlat Code Coverage"
+        
       - name: Run tests
         run: dotnet test tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
