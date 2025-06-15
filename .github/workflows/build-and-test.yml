@@ -23,8 +23,22 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ModularMonolith.Template.sln
 
-      - name: Build solution
-        run: dotnet build ModularMonolith.Template.sln --configuration Release --no-restore
+      # Build all module API projects first
+      - name: Build Auth.API module
+        run: dotnet build src/Modules/Auth/Auth.API/Auth.API.csproj --configuration Release --no-restore
+
+      - name: Build Users.API module
+        run: dotnet build src/Modules/Users/Users.API/Users.API.csproj --configuration Release --no-restore
+
+      # Add more modules build steps here if you add new modules
+
+      # Build main API project after modules are built
+      - name: Build ModularMonolith.Template.Api
+        run: dotnet build src/ModularMonolith.Template.Api/ModularMonolith.Template.Api.csproj --configuration Release --no-restore
+
+      # Build and run tests
+      - name: Build Tests
+        run: dotnet build tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test ModularMonolith.Template.sln --configuration Release --no-build --collect:"XPlat Code Coverage"
+        run: dotnet test tests/ModularMonolith.Template.Application.Tests.csproj --configuration Release --no-build --collect:"XPlat Code Coverage"
