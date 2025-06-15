@@ -1,5 +1,4 @@
 ﻿using Auth.Application.DTOs.RequestModel;
-using Auth.Application.DTOs.ResponseModel;
 using Auth.Application.Exceptions;
 using FluentAssertions;
 using ModularMonolith.Template.Application.Tests.Common;

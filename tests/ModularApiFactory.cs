@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ModularMonolith.Template.Config.DbContext;
-using Users.Domain.Entities;
+
 using Users.Infra.Entities;
 
 namespace ModularMonolith.Template.Application.Tests
@@ -21,7 +21,7 @@ namespace ModularMonolith.Template.Application.Tests
                 {
                     IServiceProvider scopedServices = scope.ServiceProvider;
                     AppDbContext db = scopedServices.GetRequiredService<AppDbContext>();
-
+                                        
                     // Ensure the database is created (create tables)
                     db.Database.EnsureCreated();
 
